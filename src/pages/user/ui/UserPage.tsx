@@ -1,5 +1,12 @@
+import Button from "@/shared/ui/Button";
+
 export default function UserPage() {
-  return <></>;
+  return (
+    <>
+      <h1>User Page</h1>
+      <Button />
+    </>
+  );
 }
 
 // здесь я получаю userId из URL, делаю запрос /users/:id - получаю данные о пользователе.
