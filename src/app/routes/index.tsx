@@ -1,21 +1,18 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { AppLayout } from "../../widgets/layouts/AppLayout";
-import LoginPage from "../../pages/login";
-import UserPage from "../../pages/user";
-import AlbumPage from "../../pages/albums";
-import PhotoPage from "../../pages/photos";
-import SettingsPage from "../../pages/settings";
+import LoginPage from "../../pages/login/ui/LoginPage";
+import UserPage from "../../pages/user/ui/UserPage";
+import AlbumPage from "../../pages/albums/ui/AlbumPage";
+import PhotoPage from "../../pages/photos/ui/PhotoPage";
+import SettingsPage from "../../pages/settings/ui/SettingsPage";
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/user/:id" element={<UserPage />} />
-      <Route element={<AppLayout />}>
-        <Route path="/albums/:id" element={<AlbumPage />} />
-        <Route path="/photos/:id" element={<PhotoPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Route>
+      <Route path="/albums/:id" element={<AlbumPage />} />
+      <Route path="/photos/:id" element={<PhotoPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

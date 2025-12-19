@@ -1,7 +1,5 @@
-import { UserPageView } from "../../widgets/user-page/ui/UserPageView";
-
 export default function UserPage() {
-  return <UserPageView />;
+  return <></>;
 }
 
 // здесь я получаю userId из URL, делаю запрос /users/:id - получаю данные о пользователе.
