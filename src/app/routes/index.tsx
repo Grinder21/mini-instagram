@@ -10,7 +10,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/user/:id" element={<UserPage />} />
+      <Route path="/users/:id" element={<UserPage />} />
       <Route path="/albums/:id" element={<AlbumPage />} />
       <Route path="/photos/:id" element={<PhotoPage />} />
       <Route path="/settings" element={<SettingsPage />} />
