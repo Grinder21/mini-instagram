@@ -5,21 +5,34 @@ import { useGetUser } from "@/features/getUser/api/useGetUser";
 export default function UserPage() {
   const { id } = useParams();
 
-  // todo: обработать нереальный id, например id 43243242532
-  const { isLoading, user } = useGetUser(
-    typeof id === "string" ? Number(id) : id
-  );
+  const userId = (() => {
+    if (!id) return undefined;
+    const n = Number(id);
+    return Number.isFinite(n) ? n : undefined;
+  })();
 
-  // кастомный хук для запроса пользователя getUserData с state + state для loading
-  // + выкинуть исключения
+  const { isLoading, user, error } = useGetUser(userId);
 
-  if (isLoading)
+  if (userId === undefined) {
+    return <div className="p-6 text-center">Неверный id пользователя</div>;
+  }
+
+  if (isLoading) {
     return (
-      <div>
+      <div className="p-6">
         <SpinnerLoader />
       </div>
     );
-  // todo: user отсутствует, не загрузился
+  }
+
+  if (error) {
+    return <div className="p-6 text-center">Ошибка: {error}</div>;
+  }
+
+  if (!user) {
+    return <div className="p-6 text-center">Пользователь не найден</div>;
+  }
+
   return (
     <div className="flex justify-center px-4">
       <div className="w-full max-w-2xl rounded-3xl border bg-white p-8 shadow-md">
@@ -29,11 +42,11 @@ export default function UserPage() {
 
         <div className="mt-6 space-y-3">
           <div className="rounded-xl border bg-gray-50 px-4 py-3 text-base text-gray-900 shadow-inner">
-            {user?.name}
+            {user.name}
           </div>
 
           <div className="rounded-xl border bg-gray-50 px-4 py-3 text-sm text-gray-700 shadow-inner">
-            {user?.email}
+            {user.email}
           </div>
         </div>
 
@@ -52,5 +65,3 @@ export default function UserPage() {
     </div>
   );
 }
-
-// потом делаю запрос на получение альбомов /albums?userId=:id и передаю все это в UserPageView

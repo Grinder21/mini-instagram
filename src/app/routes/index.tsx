@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "@pages/login/ui/LoginPage";
-import UserPage from "@pages/user/ui/UserPage";
-import AlbumPage from "@pages/albums/ui/AlbumPage";
-import PhotoPage from "@pages/photos/ui/PhotoPage";
-import SettingsPage from "@pages/settings/ui/SettingsPage";
+import LoginPage from "@/pages/login/ui/LoginPage";
+import UserPage from "@/pages/user/ui/UserPage";
+import AlbumPage from "@/pages/albums/ui/AlbumPage";
+import PhotoPage from "@/pages/photos/ui/PhotoPage";
+import SettingsPage from "@/pages/settings/ui/SettingsPage";
 import NotFoundPage from "@/pages/notfound/ui/NotFoundPage";
 
 export function AppRoutes() {
