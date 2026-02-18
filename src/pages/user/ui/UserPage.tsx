@@ -1,23 +1,13 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { SpinnerLoader } from "@/shared/ui/Loader";
-import { useGetUser } from "@/features/getUser/api/useGetUser";
+import { useAuth } from "@/app/providers/auth/lib/useAuth";
 
 export default function UserPage() {
   const { id } = useParams();
+  const routeId = Number(id);
+  const { status, user } = useAuth();
 
-  const userId = (() => {
-    if (!id) return undefined;
-    const n = Number(id);
-    return Number.isFinite(n) ? n : undefined;
-  })();
-
-  const { isLoading, user, error } = useGetUser(userId);
-
-  if (userId === undefined) {
-    return <div className="p-6 text-center">Неверный id пользователя</div>;
-  }
-
-  if (isLoading) {
+  if (status === "loading") {
     return (
       <div className="p-6">
         <SpinnerLoader />
@@ -25,12 +15,16 @@ export default function UserPage() {
     );
   }
 
-  if (error) {
-    return <div className="p-6 text-center">Ошибка: {error}</div>;
+  if (status !== "authenticated" || !user) {
+    return null;
   }
 
-  if (!user) {
-    return <div className="p-6 text-center">Пользователь не найден</div>;
+  if (!Number.isFinite(routeId)) {
+    return <div className="p-6 text-center">Неверный id пользователя</div>;
+  }
+
+  if (routeId !== user.id) {
+    return <Navigate to="/forbidden" replace />;
   }
 
   return (

@@ -7,6 +7,7 @@ import PhotoPage from "@/pages/photos/ui/PhotoPage";
 import SettingsPage from "@/pages/settings/ui/SettingsPage";
 import NotFoundPage from "@/pages/notfound/ui/NotFoundPage";
 import { PrivateRoute } from "../providers/router/PrivateRoute";
+import ForbiddenPage from "@/pages/forbidden/ui/ForbiddenPage";
 
 export function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ export function AppRoutes() {
         <Route path="/albums/:id" element={<AlbumPage />} />
         <Route path="/photos/:id" element={<PhotoPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/forbidden" element={<ForbiddenPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />
