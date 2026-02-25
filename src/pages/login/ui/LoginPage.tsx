@@ -1,36 +1,35 @@
-import { useMemo, useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/app/providers/auth/lib/useAuth";
+import { useState, type FormEvent } from "react";
+
+import { useAuth } from "@/entities/auth";
+import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/Alert";
+import { Button } from "@/shared/ui/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/Card";
+import { Form } from "@/shared/ui/Form";
+import { Input } from "@/shared/ui/Input";
+import { Label } from "@/shared/ui/Label";
 import { SpinnerLoader } from "@/shared/ui/Loader";
 
 export default function LoginPage() {
   const [value, setValue] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const { status, user, loginById, error } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const fromPath = useMemo(() => {
-    const st = location.state as { from?: { pathname?: string } } | null;
-    return st?.from?.pathname ?? null;
-  }, [location.state]);
-
-  useEffect(() => {
-    if (status === "authenticated" && user) {
-      navigate(fromPath ?? `/users/${user.id}`, { replace: true });
-    }
-  }, [status, user, fromPath, navigate]);
-
+  const { error, loginById, status } = useAuth();
   const isBusy = status === "loading";
 
-  function onSubmit(e: React.FormEvent) {
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLocalError(null);
 
     const id = Number(value);
+
     if (!Number.isFinite(id) || id <= 0) {
-      setLocalError("Введите корректный userId (число > 0)");
+      setLocalError("Enter a valid user id");
       return;
     }
 
@@ -38,49 +37,45 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md p-6">
-      <h1 className="text-3xl font-semibold">Login</h1>
+    <Card>
+      <CardHeader>
+        <CardTitle>Login</CardTitle>
+        <CardDescription>Use your user id to sign in.</CardDescription>
+      </CardHeader>
 
-      <form className="mt-6 space-y-3" onSubmit={onSubmit}>
-        <label className="block text-sm font-medium text-gray-700">
-          User ID
-        </label>
+      <CardContent>
+        <Form onSubmit={onSubmit}>
+          <Label htmlFor="user-id">User ID</Label>
+          <Input
+            autoFocus
+            id="user-id"
+            inputMode="numeric"
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="1"
+            value={value}
+          />
 
-        <input
-          className="w-full rounded-xl border px-3 py-2"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="не знаю, пусть будет 1"
-          inputMode="numeric"
-          autoFocus
-        />
+          {localError && (
+            <Alert variant="destructive">
+              <AlertTitle>Validation error</AlertTitle>
+              <AlertDescription>{localError}</AlertDescription>
+            </Alert>
+          )}
 
-        {localError && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-            {localError}
-          </div>
-        )}
+          {error && (
+            <Alert variant="destructive">
+              <AlertTitle>Sign in failed</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
-        {status === "error" && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-            Не удалось войти: {error || "unknown error"}
-          </div>
-        )}
+          <Button disabled={isBusy} fullWidth type="submit">
+            {isBusy ? "Signing in..." : "Sign in"}
+          </Button>
+        </Form>
 
-        <button
-          type="submit"
-          disabled={isBusy}
-          className="w-full rounded-xl bg-black px-4 py-2 text-white disabled:opacity-60"
-        >
-          {isBusy ? "Входим..." : "Войти"}
-        </button>
-
-        {isBusy && (
-          <div className="pt-2">
-            <SpinnerLoader />
-          </div>
-        )}
-      </form>
-    </div>
+        {isBusy && <SpinnerLoader />}
+      </CardContent>
+    </Card>
   );
 }

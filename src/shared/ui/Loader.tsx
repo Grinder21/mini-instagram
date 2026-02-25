@@ -1,13 +1,15 @@
+import type { ComponentProps } from "react";
+
 import { LoaderIcon } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
 
-function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
+function Spinner({ className, ...props }: ComponentProps<"svg">) {
   return (
     <LoaderIcon
-      role="status"
       aria-label="Loading"
-      className={cn("size-4 animate-spin", className)}
+      className={cn("size-5 animate-spin", className)}
+      role="status"
       {...props}
     />
   );
@@ -15,7 +17,7 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
 
 export function SpinnerLoader() {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex min-h-24 items-center justify-center">
       <Spinner />
     </div>
   );

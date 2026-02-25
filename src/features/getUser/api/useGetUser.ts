@@ -1,16 +1,32 @@
+import { isUser, useAuth, type User } from "@/entities/auth";
 import { useGetData } from "@/shared/api/useGetData";
-import type { User } from "@/entities/user/model/types";
 
-export function useGetUser(id: number | undefined) {
+export function useGetUser(id: string | undefined) {
+  const { status, user: authUser } = useAuth();
+  const hasAccess =
+    status === "authenticated" && Boolean(id) && String(authUser?.id) === id;
+
   const { data, isLoading, error } = useGetData<User>(
     `https://jsonplaceholder.typicode.com/users/${id}`,
     undefined,
-    id !== undefined
+    hasAccess
   );
 
+  const user = isUser(data) ? data : null;
+
+  if (!hasAccess) {
+    return {
+      user: null,
+      isLoading: status === "loading",
+      error: status === "loading" ? null : "Forbidden",
+    };
+  }
+
+  const resolvedError = !isLoading && !error && !user ? "Not Found" : error;
+
   return {
-    user: data,
+    user,
     isLoading,
-    error,
+    error: resolvedError,
   };
 }
