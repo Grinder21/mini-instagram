@@ -1,1 +1,1 @@
-export { default } from "./ui/PhotoPage";
+export { default } from "./ui/PhotoRoute";

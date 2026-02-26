@@ -1,1 +1,1 @@
-export { default } from "./ui/AlbumPage";
+export { default } from "./ui/AlbumRoute";

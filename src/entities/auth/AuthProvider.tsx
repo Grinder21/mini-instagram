@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
+import { isUser, type User } from "@/entities/user";
 import { useGetData } from "@/shared/api/useGetData";
 
 import { AUTH_STORAGE_KEY, AuthContext } from "./authContext";
 import {
-  isUser,
   type AuthContextValue,
   type AuthStatus,
-  type User,
 } from "./types";
 
 type AuthProviderProps = {

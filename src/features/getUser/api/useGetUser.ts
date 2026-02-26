@@ -1,4 +1,5 @@
-import { isUser, useAuth, type User } from "@/entities/auth";
+import { useAuth } from "@/entities/auth";
+import { isUser, type User } from "@/entities/user";
 import { useGetData } from "@/shared/api/useGetData";
 
 export function useGetUser(id: string | undefined) {
