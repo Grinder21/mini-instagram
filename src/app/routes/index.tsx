@@ -28,6 +28,7 @@ export function AppRoutes() {
         <Route path="/forbidden" element={<ForbiddenPage />} />
 
         <Route element={<OwnerGuard />}>
+          <Route path="/user/:id" element={<UserPage />} />
           <Route path="/users/:id" element={<UserPage />} />
         </Route>
       </Route>

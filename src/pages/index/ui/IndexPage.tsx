@@ -11,7 +11,7 @@ export default function IndexPage() {
   }
 
   if (status === "authenticated" && user) {
-    return <Navigate to={`/users/${user.id}`} replace />;
+    return <Navigate to={`/user/${user.id}`} replace />;
   }
 
   return <Navigate to="/login" replace />;

@@ -21,7 +21,7 @@ export function GuestGuard() {
     const state = location.state as GuardLocationState | null;
     const fromPath = state?.from?.pathname;
 
-    return <Navigate to={fromPath ?? `/users/${user.id}`} replace />;
+    return <Navigate to={fromPath ?? `/user/${user.id}`} replace />;
   }
 
   return <Outlet />;

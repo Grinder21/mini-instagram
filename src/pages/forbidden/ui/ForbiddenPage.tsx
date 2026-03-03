@@ -27,7 +27,7 @@ export default function ForbiddenPage() {
       <CardContent>
         <Button
           fullWidth
-          onClick={() => navigate(user ? `/users/${user.id}` : "/login")}
+          onClick={() => navigate(user ? `/user/${user.id}` : "/login")}
         >
           Go back
         </Button>

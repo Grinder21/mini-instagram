@@ -25,8 +25,21 @@ export function SectionHeading({
   );
 }
 
-export function TileGrid({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("grid grid-cols-2 gap-3 sm:grid-cols-3", className)} {...props} />;
+export function TileGrid({
+  className,
+  style,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("grid gap-3", className)}
+      style={{
+        gridTemplateColumns: "repeat(var(--app-grid-columns, 3), minmax(0, 1fr))",
+        ...style,
+      }}
+      {...props}
+    />
+  );
 }
 
 type TileButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
