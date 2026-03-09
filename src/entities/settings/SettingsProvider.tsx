@@ -72,6 +72,7 @@ export function SettingsProvider({ children }: SettingsProviderProps) {
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", state.theme === "dark");
+    document.documentElement.style.colorScheme = state.theme;
     document.documentElement.style.setProperty(
       "--app-grid-columns",
       String(state.grid)

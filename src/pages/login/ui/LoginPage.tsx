@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from "react";
+import { KeyRound, Sparkles } from "lucide-react";
 
 import { useAuth } from "@/entities/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/Alert";
+import { Badge } from "@/shared/ui/Badge";
 import { Button } from "@/shared/ui/Button";
 import {
   Card,
@@ -14,6 +16,8 @@ import { Form } from "@/shared/ui/Form";
 import { Input } from "@/shared/ui/Input";
 import { Label } from "@/shared/ui/Label";
 import { SpinnerLoader } from "@/shared/ui/Loader";
+
+const demoUserIds = [1, 3, 5, 8];
 
 export default function LoginPage() {
   const [value, setValue] = useState("");
@@ -37,10 +41,27 @@ export default function LoginPage() {
   }
 
   return (
-    <Card>
+    <Card className="max-w-md">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Use your user id to sign in.</CardDescription>
+        <div className="overflow-hidden rounded-xl border border-border/60">
+          <img
+            alt="Photo feed preview"
+            className="h-28 w-full object-cover"
+            src="https://picsum.photos/seed/login-feed/900/240"
+          />
+        </div>
+
+        <div className="flex items-center justify-between gap-2">
+          <Badge variant="secondary">
+            <Sparkles className="mr-1 h-3.5 w-3.5" />
+            Demo mode
+          </Badge>
+          <Badge variant="outline">JSONPlaceholder users</Badge>
+        </div>
+        <CardTitle className="text-3xl">Login</CardTitle>
+        <CardDescription>
+          Enter your `userId` to open your profile and albums.
+        </CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -51,9 +72,25 @@ export default function LoginPage() {
             id="user-id"
             inputMode="numeric"
             onChange={(e) => setValue(e.target.value)}
-            placeholder="1"
+            placeholder="Try 1"
             value={value}
           />
+
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">Quick pick demo users:</p>
+            <div className="grid grid-cols-4 gap-2">
+              {demoUserIds.map((id) => (
+                <Button
+                  key={id}
+                  onClick={() => setValue(String(id))}
+                  size="sm"
+                  variant={value === String(id) ? "secondary" : "outline"}
+                >
+                  #{id}
+                </Button>
+              ))}
+            </div>
+          </div>
 
           {localError && (
             <Alert variant="destructive">
@@ -70,6 +107,7 @@ export default function LoginPage() {
           )}
 
           <Button disabled={isBusy} fullWidth type="submit">
+            <KeyRound className="h-4 w-4" />
             {isBusy ? "Signing in..." : "Sign in"}
           </Button>
         </Form>

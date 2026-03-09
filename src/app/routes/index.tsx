@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import { AppLayout } from "@/app/layouts/AppLayout";
 import { AuthGuard } from "@/app/providers/router/guards/AuthGuard";
 import { GuestGuard } from "@/app/providers/router/guards/GuestGuard";
 import { OwnerGuard } from "@/app/providers/router/guards/OwnerGuard";
@@ -15,26 +16,28 @@ import UserPage from "@/pages/user";
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<IndexPage />} />
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<IndexPage />} />
 
-      <Route element={<GuestGuard />}>
-        <Route path="/login" element={<LoginPage />} />
-      </Route>
-
-      <Route element={<AuthGuard />}>
-        <Route path="/albums/:id" element={<AlbumPage />} />
-        <Route path="/photos/:id" element={<PhotoPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/forbidden" element={<ForbiddenPage />} />
-
-        <Route element={<OwnerGuard />}>
-          <Route path="/user/:id" element={<UserPage />} />
-          <Route path="/users/:id" element={<UserPage />} />
+        <Route element={<GuestGuard />}>
+          <Route path="/login" element={<LoginPage />} />
         </Route>
-      </Route>
 
-      <Route path="/404" element={<NotFoundPage />} />
-      <Route path="*" element={<Navigate to="/404" replace />} />
+        <Route element={<AuthGuard />}>
+          <Route path="/albums/:id" element={<AlbumPage />} />
+          <Route path="/photos/:id" element={<PhotoPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/forbidden" element={<ForbiddenPage />} />
+
+          <Route element={<OwnerGuard />}>
+            <Route path="/user/:id" element={<UserPage />} />
+            <Route path="/users/:id" element={<UserPage />} />
+          </Route>
+        </Route>
+
+        <Route path="/404" element={<NotFoundPage />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
+      </Route>
     </Routes>
   );
 }
