@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   Camera,
   Grid3X3,
   LogOut,
@@ -40,21 +39,11 @@ export function AppLayout() {
 
   const isAuthenticated = status === "authenticated" && Boolean(user);
   const pageTitle = resolvePageTitle(location.pathname);
-  const canUseBackButton = location.pathname !== "/" && location.pathname !== "/login";
-
-  function handleBack() {
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-
-    if (user) {
-      navigate(`/user/${user.id}`, { replace: true });
-      return;
-    }
-
-    navigate("/login", { replace: true });
-  }
+  const isProfilePage =
+    Boolean(user) &&
+    (location.pathname === `/user/${user?.id}` ||
+      location.pathname === `/users/${user?.id}`);
+  const isSettingsPage = location.pathname === "/settings";
 
   function handleLogout() {
     logout();
@@ -82,13 +71,6 @@ export function AppLayout() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              {canUseBackButton && (
-                <Button onClick={handleBack} size="sm" variant="outline">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back
-                </Button>
-              )}
-
               {isAuthenticated && user && (
                 <>
                   <div className="hidden items-center gap-2 rounded-xl border border-border/60 bg-background/80 px-2 py-1.5 sm:flex">
@@ -109,18 +91,22 @@ export function AppLayout() {
                     Grid {grid}
                   </Badge>
 
-                  <Button
-                    onClick={() => navigate(`/user/${user.id}`)}
-                    size="sm"
-                    variant="ghost"
-                  >
-                    <UserRound className="h-4 w-4" />
-                    Profile
-                  </Button>
-                  <Button onClick={() => navigate("/settings")} size="sm" variant="ghost">
-                    <Settings2 className="h-4 w-4" />
-                    Settings
-                  </Button>
+                  {!isProfilePage && (
+                    <Button
+                      onClick={() => navigate(`/user/${user.id}`)}
+                      size="sm"
+                      variant="ghost"
+                    >
+                      <UserRound className="h-4 w-4" />
+                      Profile
+                    </Button>
+                  )}
+                  {!isSettingsPage && (
+                    <Button onClick={() => navigate("/settings")} size="sm" variant="ghost">
+                      <Settings2 className="h-4 w-4" />
+                      Settings
+                    </Button>
+                  )}
                   <Button onClick={handleLogout} size="sm" variant="outline">
                     <LogOut className="h-4 w-4" />
                     Logout

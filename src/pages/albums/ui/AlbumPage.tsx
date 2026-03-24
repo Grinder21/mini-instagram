@@ -1,4 +1,4 @@
-import { ArrowLeft, Images, Settings2 } from "lucide-react";
+import { Images } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 import { useGetAlbum } from "@/features/getAlbum/api/useGetAlbum";
@@ -13,9 +13,9 @@ import {
   TileGrid,
   TileImage,
 } from "@/shared/ui/Blocks";
-import { Button } from "@/shared/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
+import { Card, CardContent } from "@/shared/ui/Card";
 import { SpinnerLoader } from "@/shared/ui/Loader";
+import { PageHeader } from "@/shared/ui/PageHeader";
 
 type AlbumPageProps = {
   id: string;
@@ -23,7 +23,6 @@ type AlbumPageProps = {
 
 export default function AlbumPage({ id }: AlbumPageProps) {
   const navigate = useNavigate();
-
   const { album, isLoading: isAlbumLoading, error: albumError } = useGetAlbum(id);
   const {
     photos,
@@ -31,7 +30,7 @@ export default function AlbumPage({ id }: AlbumPageProps) {
     error: photosError,
   } = useGetAlbumPhotos(id, Boolean(album));
 
-  if (isAlbumLoading || (album && isPhotosLoading)) {
+  if (isAlbumLoading) {
     return <SpinnerLoader />;
   }
 
@@ -45,28 +44,12 @@ export default function AlbumPage({ id }: AlbumPageProps) {
 
   return (
     <Card className="max-w-6xl">
-      <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-2">
-          <CardTitle className="flex items-center gap-2 text-3xl">
-            <Images className="h-7 w-7 text-primary" />
-            Album #{album.id}
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Browse photos inside this album collection.
-          </p>
-        </div>
-
-        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-          <Button onClick={() => navigate(`/user/${album.userId}`)} variant="outline">
-            <ArrowLeft className="h-4 w-4" />
-            Back to user
-          </Button>
-          <Button onClick={() => navigate("/settings")} variant="ghost">
-            <Settings2 className="h-4 w-4" />
-            Settings
-          </Button>
-        </div>
-      </CardHeader>
+      <PageHeader
+        description="Browse photos inside this album collection."
+        icon={<Images className="h-7 w-7 text-primary" />}
+        introClassName="space-y-2"
+        title={`Album #${album.id}`}
+      />
 
       <CardContent className="space-y-6">
         <BorderedBox className="space-y-2 bg-background/70">
@@ -81,15 +64,21 @@ export default function AlbumPage({ id }: AlbumPageProps) {
           </Alert>
         )}
 
-        {!photosError && photos.length === 0 && <p>There are no photos in this album.</p>}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <SectionHeading>Photos</SectionHeading>
+            <Badge variant="outline">
+              {isPhotosLoading ? "Loading..." : `${photos.length} items`}
+            </Badge>
+          </div>
 
-        {!photosError && photos.length > 0 && (
-          <section className="space-y-3">
-            <div className="flex items-center justify-between gap-2">
-              <SectionHeading>Photos</SectionHeading>
-              <Badge variant="outline">{photos.length} items</Badge>
-            </div>
+          {isPhotosLoading && <SpinnerLoader />}
 
+          {!photosError && !isPhotosLoading && photos.length === 0 && (
+            <p>There are no photos in this album.</p>
+          )}
+
+          {!photosError && !isPhotosLoading && photos.length > 0 && (
             <TileGrid>
               {photos.map((photo, index) => (
                 <TileButton
@@ -119,8 +108,8 @@ export default function AlbumPage({ id }: AlbumPageProps) {
                 </TileButton>
               ))}
             </TileGrid>
-          </section>
-        )}
+          )}
+        </section>
       </CardContent>
     </Card>
   );

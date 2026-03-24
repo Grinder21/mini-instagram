@@ -17,8 +17,9 @@ import {
   SectionHeading,
 } from "@/shared/ui/Blocks";
 import { Button } from "@/shared/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
+import { Card, CardContent } from "@/shared/ui/Card";
 import { SpinnerLoader } from "@/shared/ui/Loader";
+import { PageHeader } from "@/shared/ui/PageHeader";
 
 type PhotoPageProps = {
   id: string;
@@ -38,13 +39,11 @@ export default function PhotoPage({ id }: PhotoPageProps) {
     comments,
     isLoading: isCommentsLoading,
     error: commentsError,
-    mappedFromPostId,
   } = useGetPhotoComments(id, Boolean(photo && album));
 
   if (
     isPhotoLoading ||
-    (photo && isAlbumLoading) ||
-    (photo && album && isCommentsLoading)
+    (photo && isAlbumLoading)
   ) {
     return <SpinnerLoader />;
   }
@@ -59,24 +58,16 @@ export default function PhotoPage({ id }: PhotoPageProps) {
 
   return (
     <Card className="max-w-5xl">
-      <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
-          <CardTitle className="text-3xl">Photo #{photo.id}</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Single photo view with comments and quick navigation.
-          </p>
-        </div>
-
-        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+      <PageHeader
+        actions={
           <Button onClick={() => navigate(`/albums/${album.id}`)} variant="outline">
             <ArrowLeft className="h-4 w-4" />
             Back to album
           </Button>
-          <Button onClick={() => navigate(`/user/${album.userId}`)} variant="ghost">
-            Profile
-          </Button>
-        </div>
-      </CardHeader>
+        }
+        description="Single photo view with comments."
+        title={`Photo #${photo.id}`}
+      />
 
       <CardContent className="space-y-6">
         <MediaFrame>
@@ -104,12 +95,9 @@ export default function PhotoPage({ id }: PhotoPageProps) {
               <MessageCircleMore className="h-5 w-5 text-primary" />
               Comments
             </SectionHeading>
-            <div className="flex items-center gap-2">
-              {mappedFromPostId && (
-                <Badge variant="secondary">Source thread #{mappedFromPostId}</Badge>
-              )}
-              <Badge variant="outline">{comments.length}</Badge>
-            </div>
+            <Badge variant="outline">
+              {isCommentsLoading ? "Loading..." : comments.length}
+            </Badge>
           </div>
 
           {commentsError && (
@@ -119,9 +107,13 @@ export default function PhotoPage({ id }: PhotoPageProps) {
             </Alert>
           )}
 
-          {!commentsError && comments.length === 0 && <p>No comments yet.</p>}
+          {!commentsError && isCommentsLoading && <SpinnerLoader />}
 
-          {!commentsError && comments.length > 0 && (
+          {!commentsError && !isCommentsLoading && comments.length === 0 && (
+            <p>No comments yet.</p>
+          )}
+
+          {!commentsError && !isCommentsLoading && comments.length > 0 && (
             <CommentsList>
               {comments.map((comment) => {
                 const { iso, label } = getCommentDateMeta(comment.id, photo.id);
@@ -141,16 +133,6 @@ export default function PhotoPage({ id }: PhotoPageProps) {
             </CommentsList>
           )}
         </section>
-
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Button fullWidth onClick={() => navigate(`/albums/${album.id}`)} variant="outline">
-            <ArrowLeft className="h-4 w-4" />
-            Back to album
-          </Button>
-          <Button fullWidth onClick={() => navigate(`/user/${album.userId}`)} variant="ghost">
-            Go to user page
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );

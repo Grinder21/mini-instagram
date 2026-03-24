@@ -1,9 +1,8 @@
 import { useState, type FormEvent } from "react";
-import { KeyRound, Sparkles } from "lucide-react";
+import { KeyRound } from "lucide-react";
 
 import { useAuth } from "@/entities/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/shared/ui/Alert";
-import { Badge } from "@/shared/ui/Badge";
 import { Button } from "@/shared/ui/Button";
 import {
   Card,
@@ -51,13 +50,6 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="flex items-center justify-between gap-2">
-          <Badge variant="secondary">
-            <Sparkles className="mr-1 h-3.5 w-3.5" />
-            Demo mode
-          </Badge>
-          <Badge variant="outline">JSONPlaceholder users</Badge>
-        </div>
         <CardTitle className="text-3xl">Login</CardTitle>
         <CardDescription>
           Enter your `userId` to open your profile and albums.
@@ -77,7 +69,9 @@ export default function LoginPage() {
           />
 
           <div className="space-y-2">
-            <p className="text-xs text-muted-foreground">Quick pick demo users:</p>
+            <p className="text-xs text-muted-foreground">
+              Quick pick demo users:
+            </p>
             <div className="grid grid-cols-4 gap-2">
               {demoUserIds.map((id) => (
                 <Button

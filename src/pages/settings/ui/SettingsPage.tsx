@@ -13,11 +13,8 @@ import { Button } from "@/shared/ui/Button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/shared/ui/Card";
+import { PageHeader } from "@/shared/ui/PageHeader";
 
 const themeLabels: Record<Theme, string> = {
   light: "Light",
@@ -39,22 +36,19 @@ export default function SettingsPage() {
 
   return (
     <Card className="max-w-4xl">
-      <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
-          <CardTitle className="text-3xl">Settings</CardTitle>
-          <CardDescription>
-            Tune the global theme and gallery grid density. Changes apply immediately.
-          </CardDescription>
-        </div>
-
-        <Button
-          onClick={() => navigate(user ? `/user/${user.id}` : "/")}
-          variant="outline"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to profile
-        </Button>
-      </CardHeader>
+      <PageHeader
+        actions={
+          <Button
+            onClick={() => navigate(user ? `/user/${user.id}` : "/")}
+            variant="outline"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to profile
+          </Button>
+        }
+        description="Tune the global theme and gallery grid density. Changes apply immediately."
+        title="Settings"
+      />
 
       <CardContent className="space-y-8">
         <section className="space-y-4">
@@ -138,15 +132,6 @@ export default function SettingsPage() {
           </BorderedBox>
         </section>
       </CardContent>
-
-      <CardFooter className="justify-end">
-        <Button
-          onClick={() => navigate(user ? `/user/${user.id}` : "/")}
-          variant="outline"
-        >
-          Save and go back
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

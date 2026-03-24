@@ -1,7 +1,7 @@
-import { Globe, Mail, MapPin, Settings2 } from "lucide-react";
+import { Globe, Mail, MapPin } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 
-import { useGetUser } from "@/features/getUser/api/useGetUser";
+import { useAuth } from "@/entities/auth";
 import { useGetUserAlbums } from "@/features/getUserAlbums/api/useGetUserAlbums";
 import {
   getAlbumCoverUrl,
@@ -18,9 +18,9 @@ import {
   TileGrid,
   TileImage,
 } from "@/shared/ui/Blocks";
-import { Button } from "@/shared/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
+import { Card, CardContent } from "@/shared/ui/Card";
 import { SpinnerLoader } from "@/shared/ui/Loader";
+import { PageHeader } from "@/shared/ui/PageHeader";
 
 type UserPageProps = {
   id: string;
@@ -28,43 +28,23 @@ type UserPageProps = {
 
 export default function UserPage({ id }: UserPageProps) {
   const navigate = useNavigate();
-
-  const { user, isLoading: isUserLoading, error: userError } = useGetUser(id);
+  const { user } = useAuth();
   const {
     albums,
     isLoading: isAlbumsLoading,
     error: albumsError,
-  } = useGetUserAlbums(id);
+  } = useGetUserAlbums(user ? String(user.id) : undefined);
 
-  if (isUserLoading || (user && isAlbumsLoading)) {
-    return <SpinnerLoader />;
-  }
-
-  if (userError === "Forbidden" || albumsError === "Forbidden") {
+  if (!user || String(user.id) !== id) {
     return <Navigate to="/forbidden" replace />;
-  }
-
-  if (userError || !user) {
-    return <Navigate to="/404" replace />;
   }
 
   return (
     <Card className="max-w-6xl">
-      <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
-          <CardTitle className="text-3xl">Welcome, {user.name}</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Your profile, albums and global app settings.
-          </p>
-        </div>
-
-        <div className="flex w-full gap-2 sm:w-auto">
-          <Button fullWidth onClick={() => navigate("/settings")} variant="outline">
-            <Settings2 className="h-4 w-4" />
-            Settings
-          </Button>
-        </div>
-      </CardHeader>
+      <PageHeader
+        description="Your profile and album library."
+        title={`Welcome, ${user.name}`}
+      />
 
       <CardContent className="space-y-8">
         <section className="rounded-2xl border border-border/60 bg-muted/25 p-4 sm:p-5">
@@ -88,7 +68,9 @@ export default function UserPage({ id }: UserPageProps) {
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-2xl font-semibold">{user.name}</h2>
                 <Badge variant="secondary">@{user.username}</Badge>
-                <Badge variant="outline">{albums.length} albums</Badge>
+                <Badge variant="outline">
+                  {isAlbumsLoading ? "Loading albums..." : `${albums.length} albums`}
+                </Badge>
               </div>
 
               <BorderedBox className="bg-background/70 text-sm text-muted-foreground">
@@ -130,9 +112,11 @@ export default function UserPage({ id }: UserPageProps) {
             </Alert>
           )}
 
-          {!albumsError && albums.length === 0 && <p>No albums yet.</p>}
+          {!albumsError && isAlbumsLoading && <SpinnerLoader />}
 
-          {!albumsError && albums.length > 0 && (
+          {!albumsError && !isAlbumsLoading && albums.length === 0 && <p>No albums yet.</p>}
+
+          {!albumsError && !isAlbumsLoading && albums.length > 0 && (
             <TileGrid>
               {albums.map((album, index) => (
                 <TileButton
